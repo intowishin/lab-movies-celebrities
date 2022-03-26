@@ -15,9 +15,17 @@ router.post("/celebrities/create", (req, res, next) => {
       res.redirect("/celebrities");
     })
     .catch((err) => {
-    console.log(err)
-    res.render("celebrities/new-celebrity")
+      console.log(err);
+      res.render("celebrities/new-celebrity");
     });
+});
+
+router.get("/celebrities", (req, res, next) => {
+  Celebrity.find()
+    .then((allCelebrities) => {
+      res.render("celebrities/celebrities.hbs", { allCelebrities });
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;
