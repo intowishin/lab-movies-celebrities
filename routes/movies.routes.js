@@ -36,4 +36,19 @@ router.get("/movies", (req, res, next) => {
       .catch((err) => console.log(err));
   });
 
+  router.get("/movies/:id", (req, res, next) =>{
+      Movie.findById(req.params.id)
+      .populate("cast")
+      .then(movieDetails => {
+          res.render("movies/movie-details", { movieDetails } )
+      })
+      .catch((err) => console.log(err));
+    })
+
+    router.post("/movies/:id/delete", (req, res, next) => {
+        Movie.findByIdAndDelete(req.params.id)
+        .then(() => res.redirect("/movies"))
+        .catch((err) => console.log(err))
+    })
+
 module.exports = router;
