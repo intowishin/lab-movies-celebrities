@@ -1,1 +1,7 @@
 <h2>Your Profile Page</h2>
+
+{{#if userInSession}}
+<p>Welcome, {{userInSession.username}}!</p>
+{{else}}
+<p>You are not logged in.</p>
+{{/if}}
