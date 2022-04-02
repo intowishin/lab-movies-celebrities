@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 
 const User = require("../models/User.model");
 
-router.get("/create-account", (req, res, next) => {
+const { isLoggedIn, isNotLoggedIn, isLoggedOut } = require("../config/route-guard.config");
+
+router.get("/create-account", isLoggedOut, (req, res, next) => {
     res.render("auth-pages/signup");
 });
 
@@ -38,7 +40,7 @@ router.post("/create-account", (req, res, next) => {
         })
     })
     .then(newUser => {
-        req.session.currentUser = newUser;
+        // req.session.currentUser = newUser;
         res.redirect("/profile")
     })
     .catch(err => {
@@ -53,7 +55,7 @@ router.post("/create-account", (req, res, next) => {
     });
 })
 
-router.get("/login", (req, res, next) => res.render("auth-pages/login"));
+router.get("/login", isLoggedOut, (req, res, next) => res.render("auth-pages/login"));
 
 router.post("/process-login", (req, res, next) => {
     const {email, password} = req.body;
@@ -85,9 +87,17 @@ router.post("/process-login", (req, res, next) => {
     });
 
 
+    router.post("/logout", (req, res, next) => {
+        req.session.destroy(err => {
+            console.log(err);
 
-router.get("/profile", (req, res, next) => {
-    res.render("user-pages/profile-page", {userInSession: req.session.currentUser});
+            if(err) next(err);
+            res.redirect("/");
+        })
+    })
+
+router.get("/profile", isLoggedOut, (req, res, next) => {
+    res.render("user-pages/profile-page");
 })
 
 module.exports = router;
